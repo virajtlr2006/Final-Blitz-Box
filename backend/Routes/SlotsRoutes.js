@@ -2,6 +2,7 @@
 import express from "express";
 import { db } from "../index.js"
 import { bookingTable } from "../db/schema.js";
+import { eq } from "drizzle-orm";
 
 // 🚀 Initialize router
 const router = express.Router();
@@ -19,6 +20,14 @@ router.post("/new", async (req, res) => {
                 { message: "All fields are required" }
             )
         }
+        // 🔍 Check if booking already exists for this email
+        const CheckBooking = await db.select().from(bookingTable).where(eq(bookingTable.email, email))
+        // ⚠️ Prevent duplicate booking for same email
+        if (bookingTable.email == email) {
+            res.status(400).json(
+                { "message": "User Already booked" }
+            )
+        }
         // 💾 Insert new booking into database
         const newBooking = await db.insert(bookingTable).values({ start_time, end_time, email, booking_status, payment_status, price, date })
         // console.log(newBooking)
@@ -33,6 +42,29 @@ router.post("/new", async (req, res) => {
         )
     }
 })
+
+// 📋 GET endpoint to fetch single booking detail by ID
+router.post("/booking/:id", async (req, res) => {
+    // 📌 Extract booking ID from URL parameters
+    const { id } = req.params
+
+    try { 
+        // 🔎 Query database to find booking by ID
+        const SingleBookingDetail = await db.select().from(bookingTable).where(eq(bookingTable.id, Number(id)))
+        // console.log(SingleBookingDetail)
+        // ✅ Return booking details on success
+        res.status(200).json(
+            { "Booking-Details": SingleBookingDetail[0] }
+        )
+    } catch (error) {
+        // ❌ Handle fetch errors
+        res.status(400).json(
+            {"message":"Failed to fetch details, please try again"}
+        )
+    }
+
+})
+
 
 // 📤 Export router for use in main application
 export default router
