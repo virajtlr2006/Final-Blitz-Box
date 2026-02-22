@@ -1,5 +1,6 @@
 import express from "express";
-import router from "./Routes/SlotsRoutes.js";
+import UserRouter from "./Routes/SlotsRoutes.js";
+import AdminRouter from "./Routes/AdminRoutes.js"
 
 const app = express();
 
@@ -9,4 +10,5 @@ app.listen(8080,()=>{
     console.log("port is running at 8080");
 })
 
-app.use("/user",router)
+app.use("/user",UserRouter)
+app.use("/admin",AdminRouter)

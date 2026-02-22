@@ -10,3 +10,10 @@ export const bookingTable = pgTable("bookings", {
   price:integer().notNull(),
   date:varchar().notNull()
 });
+
+export const SlotTable = pgTable("slots",{
+  id: integer().primaryKey().generatedAlwaysAsIdentity(),
+  start_time:varchar().notNull(),
+  end_time:varchar().notNull(),
+  price:integer().notNull()
+})

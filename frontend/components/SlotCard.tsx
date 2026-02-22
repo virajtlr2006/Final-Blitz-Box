@@ -1,5 +1,6 @@
 'use client'
 import { Slot } from '@/types/slot'
+import axios from 'axios'
 import { useRouter } from 'next/router'
 import React from 'react'
 
@@ -9,10 +10,8 @@ const SlotCard = ({id,start_time,end_time,price,date,booking_status,payment_stat
 
   const deleteSlot = async() => {
     try {
-      const res = await fetch(`http://localhost:8080/deleteslot/${id}`,{
-        method: "DELETE"
-      })
-      if(res.ok) {
+      const res = await axios.post(`http://localhost:8080/deleteslot/${id}`)
+      if(res) {
         window.location.reload()
       }
     } catch (error) {

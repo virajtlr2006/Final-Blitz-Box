@@ -1,5 +1,6 @@
 'use client'
 
+import axios from "axios"
 import { useRouter } from "next/navigation"
 import { useForm, SubmitHandler } from "react-hook-form"
 
@@ -21,14 +22,8 @@ const page = () => {
 
     const CreateSlot = async (data: NewSlot) => {
         try {
-            const res = await fetch("http://localhost:8080/createslot", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(data),
-            })
-            if(!res.ok){
+            const res = await axios.post("http://localhost:8080/createslot",data)
+            if(!res){
                 throw new Error("failed to create slot");
             }
             router.push("/admin/dashboard");

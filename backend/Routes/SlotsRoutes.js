@@ -48,7 +48,7 @@ router.post("/booking/:id", async (req, res) => {
     // 📌 Extract booking ID from URL parameters
     const { id } = req.params
 
-    try { 
+    try {
         // 🔎 Query database to find booking by ID
         const SingleBookingDetail = await db.select().from(bookingTable).where(eq(bookingTable.id, Number(id)))
         // console.log(SingleBookingDetail)
@@ -59,10 +59,42 @@ router.post("/booking/:id", async (req, res) => {
     } catch (error) {
         // ❌ Handle fetch errors
         res.status(400).json(
-            {"message":"Failed to fetch details, please try again"}
+            { "message": "Failed to fetch details, please try again" }
         )
     }
 
+})
+
+// 🗑️ Cancel Booking endpoint
+router.post("/cancel/:id", async (req, res) => {
+    // 📌 Extract booking ID from URL parameters
+    const { id } = req.params
+    // console.log(id)
+
+    try {
+        // 🔍 Query database to check if booking exists
+        const CheckBooking = await db.select().from(bookingTable).where(eq(bookingTable.id,Number(id)))
+
+        // ⚠️ Return error if booking not found
+        if(CheckBooking.length == 0){
+            res.json(
+                {"message":"Slot not Booked yet"}
+            )
+        }
+
+        // 🗑️ Delete booking from database
+        await db.delete(bookingTable).where(eq(bookingTable.id, Number(id))).returning()
+
+        // ✔️ Return success response
+        res.status(200).json(
+            { "message": "Booking Canceled" }
+        )
+    } catch (error) {
+        // ❌ Handle deletion errors
+        res.status(400).json(
+            {"message":"Internal Server Error"}
+        )
+    }
 })
 
 
