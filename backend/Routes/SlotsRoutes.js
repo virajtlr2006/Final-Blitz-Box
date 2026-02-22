@@ -11,7 +11,7 @@ const router = express.Router();
 router.post("/new", async (req, res) => {
     // 📥 Extract booking details from request body with default values
     const { start_time, end_time, email, booking_status = false, payment_status = false, price, date } = req.body
-    // console.log(req.body)
+    console.log(req.body)
 
     try {
         // ✅ Validate all required fields are present
