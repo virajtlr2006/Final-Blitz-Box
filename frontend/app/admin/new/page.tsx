@@ -1,5 +1,6 @@
 'use client'
 
+import { useRouter } from "next/navigation"
 import { useForm, SubmitHandler } from "react-hook-form"
 
 export interface NewSlot {
@@ -16,9 +17,26 @@ const page = () => {
         formState: { errors },
     } = useForm<NewSlot>()
 
+    const router = useRouter();
+
     const CreateSlot = async (data: NewSlot) => {
-        console.log(data)
+        try {
+            const res = await fetch("http://localhost:8080/createslot", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(data),
+            })
+            if(!res.ok){
+                throw new Error("failed to create slot");
+            }
+            router.push("/admin/dashboard");
+        } catch (error) {
+            console.log(error);
+        }
     }
+
     return (
         <div>
             <form onSubmit={handleSubmit(CreateSlot)}>
