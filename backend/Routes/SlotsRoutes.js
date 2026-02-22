@@ -10,7 +10,7 @@ const router = express.Router();
 // 📝 POST endpoint to create a new booking
 router.post("/new", async (req, res) => {
     // 📥 Extract booking details from request body with default values
-    const { start_time, end_time, email, booking_status = false, payment_status = false, price, date } = req.body
+    const { start_time, end_time, email, price, date } = req.body
     console.log(req.body)
 
     try {
@@ -29,7 +29,7 @@ router.post("/new", async (req, res) => {
             )
         }
         // 💾 Insert new booking into database
-        const newBooking = await db.insert(bookingTable).values({ start_time, end_time, email, booking_status, payment_status, price, date })
+        const newBooking = await db.insert(bookingTable).values({ start_time, end_time, email,price, date })
         // console.log(newBooking)
         // ✔️ Return success response
         return res.status(200).json(
